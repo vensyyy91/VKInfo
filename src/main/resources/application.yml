@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: VK-Info
+  config:
+    import:
+      optional:file:.env[.properties]
+  jpa:
+    hibernate:
+      ddl-auto: update
+    #defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      max-lifetime: 2000000
+      connection-timeout: 30000
+      pool-name: HikariDbPool
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    access-cookie:
+      name: vk-info-access
+      expiration-ms: 3600000
+      path: /api/
+    refresh-cookie:
+      name: vk-info-refresh
+      expiration-ms: 172800000
+      path: /api/auth/
+  admin:
+    password: ${ADMIN_PASSWORD}
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS}
