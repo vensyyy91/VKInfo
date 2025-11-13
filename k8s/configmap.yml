@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vk-info-config
+  namespace: vk-info
+data:
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres:5432/vk_info_db"
+  SPRING_DATASOURCE_USERNAME: "vk_info_user"

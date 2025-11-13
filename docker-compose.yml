@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-vk_info_db}
+      POSTGRES_USER: ${POSTGRES_USER:-vk_info_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-qwerty}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  vk-info-app:
+    build: .
+    container_name: vk-info-app
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-vk_info_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-vk_info_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-qwerty}
+      JWT_SECRET: ${JWT_SECRET:-VG75QcmfGUWwtCDhk7SByBfTeQEdRSk9GHpF6gfyHShepd8t6VvX4HrhTmNn7pbG}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-qwerty123}
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres-data:
