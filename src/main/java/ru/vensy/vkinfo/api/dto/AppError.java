@@ -1,4 +1,4 @@
-package ru.vensy.vkinfo.exception;
+package ru.vensy.vkinfo.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

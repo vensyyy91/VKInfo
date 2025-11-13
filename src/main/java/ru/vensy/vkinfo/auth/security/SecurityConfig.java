@@ -59,7 +59,13 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/refresh").permitAll()
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/refresh",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/openapi/**"
+                        ).permitAll()
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().denyAll());
 

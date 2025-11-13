@@ -18,14 +18,16 @@ import java.util.UUID;
 
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
-    @Value("${security.jwt.refresh-cookie.expiration-ms}")
-    private Long refreshTokenDuration;
-
+    private final Long refreshTokenDuration;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final Logger log = LoggerFactory.getLogger(RefreshTokenServiceImpl.class);
 
-    public RefreshTokenServiceImpl(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository) {
+    public RefreshTokenServiceImpl(@Value("${security.jwt.refresh-cookie.expiration-ms}") Long refreshTokenDuration,
+                                   RefreshTokenRepository refreshTokenRepository,
+                                   UserRepository userRepository
+    ) {
+        this.refreshTokenDuration = refreshTokenDuration;
         this.refreshTokenRepository = refreshTokenRepository;
         this.userRepository = userRepository;
     }

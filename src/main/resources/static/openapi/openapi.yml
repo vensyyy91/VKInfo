@@ -1,0 +1,334 @@
+openapi: 3.1.3
+info:
+  title: VK Info API
+  description: API-документация приложения VK Info
+  version: 1.0.0
+
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Авторизация пользователя
+      description: Принимает login и password, возвращает заголовки Set-Cookie с JWT-токенами(access и refresh)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        "200":
+          description: Успешная авторизация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        "401":
+          description: Неверный логин или пароль
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                wrongCredentials:
+                  summary: Неверный логин или пароль
+                  value:
+                    status: 401
+                    reason: Unauthorized
+                    message: Неверный логин или пароль
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/auth/login"
+        "500":
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                internalError:
+                  summary: Внутренняя ошибка сервера
+                  value:
+                    status: 500
+                    reason: Internal Server Error
+                    message: Произошла внутренняя ошибка сервера
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/auth/login"
+  /api/auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Выход из системы
+      description: Сбрасывает access и refresh cookie
+      responses:
+        "200":
+          description: Успешный выход
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Выход выполнен успешно.
+        "401":
+          description: Пользователь не аутентифицирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                wrongCredentials:
+                  summary: Пользователь не аутентифицирован
+                  value:
+                    status: 401
+                    reason: Unauthorized
+                    message: Full authentication is required to access this resource
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/auth/logout"
+        "500":
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                internalError:
+                  summary: Внутренняя ошибка сервера
+                  value:
+                    status: 500
+                    reason: Internal Server Error
+                    message: Произошла внутренняя ошибка сервера
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/auth/logout"
+  /api/auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: Получить новый access-токен
+      description: Возвращает заголовок Set-Cookie с access-токеном при наличии Cookie с refresh-токеном
+      responses:
+        "200":
+          description: Успешное обновление токена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+        "401":
+          description: Пользователь не аутентифицирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                wrongCredentials:
+                  summary: Необходим refresh-токен
+                  value:
+                    status: 401
+                    reason: Unauthorized
+                    message: Необходим refresh-токен
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/auth/refresh"
+        "500":
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                internalError:
+                  summary: Внутренняя ошибка сервера
+                  value:
+                    status: 500
+                    reason: Internal Server Error
+                    message: Произошла внутренняя ошибка сервера
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/auth/refresh"
+  /api/vk/info:
+    post:
+      tags:
+        - VK
+      summary: Получить информацию о пользователе VK
+      description: Принимает user_id и group_id, а также заголовок vk_service_token, возвращает ФИО пользователя и параметр member (true - состоит в группе, false - не состоит в группе)
+      parameters:
+        - in: header
+          name: vk_service_token
+          description: Должен содержать сервисный ключ приложения VK
+          required: true
+          schema:
+            type: string
+            example: "32981750156867032440596123456"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VkRequest'
+      responses:
+        "200":
+          description: Успешное получение ответа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VkResponse'
+        "401":
+          description: Пользователь не аутентифицирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                wrongCredentials:
+                  summary: Пользователь не аутентифицирован
+                  value:
+                    status: 401
+                    reason: Unauthorized
+                    message: Full authentication is required to access this resource
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/vk/info"
+        "403":
+          description: Нет доступа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                wrongCredentials:
+                  summary: Нет доступа
+                  value:
+                    status: 403
+                    reason: Forbidden
+                    message: "Ошибка VK API 15: Access denied: no access to this group"
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/vk/info"
+        "404":
+          description: Пользователь VK с таким id не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                wrongCredentials:
+                  summary: Пользователь VK с таким id не найден
+                  value:
+                    status: 404
+                    reason: Not Found
+                    message: Пользователь VK с id=3874563547698 не найден.
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/vk/info"
+        "500":
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                internalError:
+                  summary: Внутренняя ошибка сервера
+                  value:
+                    status: 500
+                    reason: Internal Server Error
+                    message: Произошла внутренняя ошибка сервера
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/vk/info"
+        "502":
+          description: Ошибка VK API
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+              examples:
+                internalError:
+                  summary: Ошибка VK API
+                  value:
+                    status: 502
+                    reason: Bad Gateway
+                    message: "Ошибка VK API 1: Произошла неизвестная ошибка."
+                    timestamp: "2025-11-14 15:00:00"
+                    path: "/api/vk/info"
+
+components:
+  schemas:
+
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: user
+        password:
+          type: string
+          example: 12345
+
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 2
+        username:
+          type: string
+          example: user
+
+    VkRequest:
+      type: object
+      required:
+        - user_id
+        - group_id
+      properties:
+        user_id:
+          type: number
+          example: 1074605
+        group_id:
+          type: number
+          example: 111905078
+
+    VkResponse:
+      type: object
+      properties:
+        last_name:
+          type: string
+          example: Vasily
+        first_name:
+          type: string
+          example: Solovyev
+        middle_name:
+          type: string
+          example: Dmitrievich
+        member:
+          type: boolean
+          example: false
+
+    AppError:
+      type: object
+      properties:
+        status:
+          type: number
+        reason:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+        path:
+          type: string
+
+  examples:
+
+    AppError401:
+      summary: Неверный логин или пароль
+      value:
+        status: 401
+        reason: Unauthorized
+        message: Неверный логин или пароль
+        timestamp: "2025-11-14 15:00:00"
+        path: "/api/auth/login"
+
+    AppError500:
+      summary: Ошибка сервера
+      value:
+        status: 500
+        reason: Internal Server Error
+        message: Произошла внутренняя ошибка сервера
+        timestamp: "2025-11-14 15:00:00"
+        path: "/api/auth/login"

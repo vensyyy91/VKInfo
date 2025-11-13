@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import ru.vensy.vkinfo.exception.AppError;
+import ru.vensy.vkinfo.api.dto.AppError;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

@@ -7,7 +7,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    #defer-datasource-initialization: true
   sql:
     init:
       mode: always
@@ -39,3 +38,7 @@ security:
     password: ${ADMIN_PASSWORD}
   cors:
     allowed-origins: ${ALLOWED_ORIGINS}
+
+springdoc:
+  swagger-ui:
+    url: /openapi/openapi.yml
