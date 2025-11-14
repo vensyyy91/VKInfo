@@ -28,7 +28,7 @@ spring:
 
 security:
   jwt:
-    secret: ${JWT_SECRET}
+    secret: ${JWT_SECRET:VG75QcmfGUWwtCDhk7SByBfTeQEdRSk9GHpF6gfyHShepd8t6VvX4HrhTmNn7pbG}
     access-cookie:
       name: vk-info-access
       expiration-ms: 3600000
@@ -38,7 +38,7 @@ security:
       expiration-ms: 172800000
       path: /api/auth/
   admin:
-    password: ${ADMIN_PASSWORD}
+    password: ${ADMIN_PASSWORD:qwerty123}
 
 springdoc:
   swagger-ui:

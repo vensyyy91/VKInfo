@@ -30,6 +30,7 @@ echo "Deploying VK-Info application"
 kubectl apply -f k8s/app-deployment.yml
 kubectl apply -f k8s/app-service.yml
 
+echo "Application starting..."
 kubectl wait --for=condition=available deployment/vk-info-app -n vk-info --timeout=120s
 echo "VK-Info application deployed"
 

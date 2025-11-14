@@ -56,6 +56,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/",
+                                "/actuator/health/**",
                                 "/api/auth/login",
                                 "/api/auth/refresh",
                                 "/swagger-ui/**",
