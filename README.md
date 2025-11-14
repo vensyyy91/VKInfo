@@ -94,6 +94,7 @@ ADMIN_PASSWORD=mypassword ./k8s/deploy.sh
 minikube service vk-info-service -n vk-info
 ````
 
+После этого в браузере откроется API-документация приложения
 #### Вариант 2 - Docker
 ````
 docker-compose up
